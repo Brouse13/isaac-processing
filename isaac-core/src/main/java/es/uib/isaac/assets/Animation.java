@@ -1,49 +1,62 @@
 package es.uib.isaac.assets;
 
+import com.google.common.collect.ImmutableList;
 import es.uib.isaac.IsaacGame;
 import processing.core.PImage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static es.uib.isaac.Constants.FPS;
 
 public class Animation implements Asset {
-    public static final int TILE_WIDTH = 64;
-    public static final int TILE_HEIGHT = 64;
+    private final List<PImage> animationFrames;
+    private final String spritePath;
+    private final int width, height;
+    private int currentFrame, frameCounter;
 
-    private final PImage[] frames;
-    private final int frameCount;
-    private int frame;
-    private int frameCounter;
+    public Animation(String spritePath, int row, int size, int width, int height) {
+        this.spritePath = spritePath;
+        this.width = width;
+        this.height = height;
+        this.animationFrames = ImmutableList.copyOf(getAnimationFrames(row, size));
+    }
+
+    public Animation(String spritePath, int row, int size) {
+        this(spritePath, row, size, WIDTH, HEIGHT);
+    }
 
     /**
-     * Loads frames from a single-row sprite sheet.
+     * Get the list of all the frame animations in a list.
      *
-     * @param spriteSheetPath Path to the sprite sheet image (e.g. "assets/animations/snake.png").
-     * @param cols Number of frames (columns) in the sprite sheet.
+     * @param row row to get the animation from.
+     * @param size Size of the animation frames.
+     * @return the loaded list with the frames.
      */
-    public Animation(String spriteSheetPath, int row, int cols) {
-        this.frameCount = cols;
-        this.frames = new PImage[frameCount];
-
-        // Load the animation file
-        PImage spriteSheet = IsaacGame.INSTANCE.loadImage(spriteSheetPath);
+    private List<PImage> getAnimationFrames(int row, int size) {
+        List<PImage> frames = new ArrayList<>(size);
+        PImage spriteSheet = IsaacGame.INSTANCE.loadImage(spritePath);
         if (spriteSheet == null) {
-            throw new RuntimeException("Could not load sprite sheet: " + spriteSheetPath);
+            throw new RuntimeException("Could not load sprite sheet: " + spritePath);
         }
 
-        if (row * TILE_HEIGHT + TILE_HEIGHT > spriteSheet.height) {
+        if (size * width > spriteSheet.height) {
             throw new RuntimeException("Row " + row + " is too big");
         }
 
         // Slice horizontally: one row, multiple columns
-        for (int x = 0; x < cols; x++) {
-            int sx = x * TILE_WIDTH;
+        for (int x = 0; x < size; x++) {
+            int sx = x * width;
 
-            if (sx + TILE_WIDTH <= spriteSheet.width) {
-                frames[x] = spriteSheet.get(sx, row * TILE_HEIGHT, TILE_WIDTH, TILE_HEIGHT);
-            } else {
-                throw new RuntimeException("Frame " + x + " exceeds sprite sheet width.");
-            }
+            PImage pImage = spriteSheet.get(sx, row * height, width, width);
+            frames.add(x, pImage);
         }
+
+        if (frames.size() != size) {
+            throw new RuntimeException("Size " + frames.size() + " does not match size " + size);
+        }
+
+        return frames;
     }
 
     @Override
@@ -51,9 +64,9 @@ public class Animation implements Asset {
         frameCounter++;
         if (frameCounter >= FPS) {
             frameCounter = 0;
-            frame = (frame + 1) % frameCount;
+            currentFrame = (currentFrame + 1) % animationFrames.size();
         }
-        IsaacGame.INSTANCE.image(frames[frame], xPos, yPos);
+        IsaacGame.INSTANCE.image(animationFrames.get(currentFrame), xPos, yPos);
     }
 
     @Override
@@ -61,8 +74,8 @@ public class Animation implements Asset {
         frameCounter++;
         if (frameCounter >= FPS) {
             frameCounter = 0;
-            frame = (frame + 1) % frameCount;
+            currentFrame = (currentFrame + 1) % animationFrames.size();
         }
-        IsaacGame.INSTANCE.image(frames[frame], xPos, yPos, width, height);
+        IsaacGame.INSTANCE.image(animationFrames.get(currentFrame), xPos, yPos, width, height);
     }
 }
