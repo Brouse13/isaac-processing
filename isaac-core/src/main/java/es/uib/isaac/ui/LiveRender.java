@@ -1,6 +1,6 @@
 package es.uib.isaac.ui;
 
-import es.uib.isaac.assets.StaticResource;
+import es.uib.isaac.assets.SingleTileAsset;
 import es.uib.isaac.entity.LiveContainer;
 import es.uib.isaac.entity.LiveContainer.ExtraContainer;
 import es.uib.isaac.render.StaticRender;
@@ -19,7 +19,7 @@ public class LiveRender implements StaticRender {
     private static final int POS_Y = 10;
     private static final String PATH = "assets/ui/hearts.png";
     private final LiveContainer liveContainer;
-    private final StaticResource[] containersImage = new StaticResource[HOLLY_MANTEL + 1]; // Last index + 1
+    private final SingleTileAsset[] containersImage = new SingleTileAsset[HOLLY_MANTEL + 1]; // Last index + 1
 
     public LiveRender(LiveContainer liveContainer) {
         this.liveContainer = liveContainer;
@@ -27,16 +27,16 @@ public class LiveRender implements StaticRender {
 
     @Override
     public void initialize() {
-        containersImage[RED_FULL_HEART] = new StaticResource(PATH, 0, 0);
-        containersImage[HALF_RED_HEART] = new StaticResource(PATH, 0, 1);
-        containersImage[BLUE_FULL_HEART] = new StaticResource(PATH, 0, 2);
-        containersImage[HALF_BLUE_HEART] = new StaticResource(PATH, 0, 3);
-        containersImage[BLACK_FULL_HEART] = new StaticResource(PATH, 0, 4);
-        containersImage[HALF_BLACK_HEART] = new StaticResource(PATH, 0, 5);
+        containersImage[RED_FULL_HEART] = new SingleTileAsset(PATH, 0, 0);
+        containersImage[HALF_RED_HEART] = new SingleTileAsset(PATH, 0, 1);
+        containersImage[BLUE_FULL_HEART] = new SingleTileAsset(PATH, 0, 2);
+        containersImage[HALF_BLUE_HEART] = new SingleTileAsset(PATH, 0, 3);
+        containersImage[BLACK_FULL_HEART] = new SingleTileAsset(PATH, 0, 4);
+        containersImage[HALF_BLACK_HEART] = new SingleTileAsset(PATH, 0, 5);
 
-        containersImage[EMPTY_FULL_CONTAINER] = new StaticResource(PATH, 1, 0);
-        containersImage[HALF_WHITE_CONTAINER] = new StaticResource(PATH, 1, 1);
-        containersImage[HOLLY_MANTEL] = new StaticResource(PATH, 1, 2);
+        containersImage[EMPTY_FULL_CONTAINER] = new SingleTileAsset(PATH, 1, 0);
+        containersImage[HALF_WHITE_CONTAINER] = new SingleTileAsset(PATH, 1, 1);
+        containersImage[HOLLY_MANTEL] = new SingleTileAsset(PATH, 1, 2);
     }
 
     @Override

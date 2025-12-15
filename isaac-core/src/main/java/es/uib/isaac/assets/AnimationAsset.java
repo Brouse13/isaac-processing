@@ -9,20 +9,20 @@ import java.util.List;
 
 import static es.uib.isaac.Constants.FPS;
 
-public class Animation implements Asset {
+public class AnimationAsset implements Asset {
     private final List<PImage> animationFrames;
     private final String spritePath;
-    private final int width, height;
+    private final int tileWidth, tileHeight;
     private int currentFrame, frameCounter;
 
-    public Animation(String spritePath, int row, int size, int width, int height) {
+    public AnimationAsset(String spritePath, int row, int size, int tileWidth, int tileHeight) {
         this.spritePath = spritePath;
-        this.width = width;
-        this.height = height;
+        this.tileWidth = tileWidth;
+        this.tileHeight = tileHeight;
         this.animationFrames = ImmutableList.copyOf(getAnimationFrames(row, size));
     }
 
-    public Animation(String spritePath, int row, int size) {
+    public AnimationAsset(String spritePath, int row, int size) {
         this(spritePath, row, size, WIDTH, HEIGHT);
     }
 
@@ -40,16 +40,16 @@ public class Animation implements Asset {
             throw new RuntimeException("Could not load sprite sheet: " + spritePath);
         }
 
-        if (size * width > spriteSheet.height) {
+        if (size * tileWidth > spriteSheet.height) {
             throw new RuntimeException("Row " + row + " is too big");
         }
 
         // Slice horizontally: one row, multiple columns
         for (int x = 0; x < size; x++) {
-            int sx = x * width;
+            int sx = x * tileWidth;
 
-            PImage pImage = spriteSheet.get(sx, row * height, width, width);
-            frames.add(x, pImage);
+            PImage pImage = spriteSheet.get(sx, row * tileHeight, tileWidth, tileWidth);
+            frames.add(pImage);
         }
 
         if (frames.size() != size) {
