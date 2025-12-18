@@ -27,8 +27,8 @@ public class RoomLoader {
             byte shapeByte = in.readByte();
             RoomShape shape = RoomShape.fromByte(shapeByte);
 
-            int width = in.readInt();
-            int height = in.readInt();
+            int width = in.readUnsignedShort();
+            int height = in.readUnsignedShort();
 
             Map<Integer, Byte> entities = readIntByteMap(in);
             Map<Integer, Byte> colliders = readIntByteMap(in);
@@ -38,11 +38,11 @@ public class RoomLoader {
     }
 
     private static Map<Integer, Byte> readIntByteMap(DataInputStream in) throws IOException {
-        int collisionCount = in.readInt();
+        int collisionCount = in.readShort();
 
         Map<Integer, Byte> map = new HashMap<>(collisionCount);
         for (int i = 0; i < collisionCount; i++) {
-            int key = in.readInt();
+            int key = in.readUnsignedShort();
             byte value = in.readByte();
             map.put(key, value);
         }
