@@ -34,10 +34,10 @@ public class MqttAdapter {
         this.executor = executor;
     }
 
-    public void connect() {
+    public void connect(String host, int port, String clientId) {
         try {
-            mqtt.setHost("tom.uib.es", 1883);
-            mqtt.setClientId("isaac-processing");
+            mqtt.setHost(host, port);
+            mqtt.setClientId(clientId);
         }catch (URISyntaxException e) {
             logger.warning(e.getMessage());
             return;
