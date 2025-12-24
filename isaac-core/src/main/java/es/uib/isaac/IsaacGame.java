@@ -7,7 +7,7 @@ import es.uib.isaac.entity.BasePlayer;
 import es.uib.isaac.entity.Direction;
 import es.uib.isaac.entity.Player;
 import es.uib.isaac.network.MqttAdapter;
-import es.uib.isaac.render.ListRenderer;
+import es.uib.isaac.ui.ListRenderer;
 import es.uib.isaac.render.StaticRender;
 import es.uib.isaac.ui.LiveRender;
 import net.java.games.input.Controller;
