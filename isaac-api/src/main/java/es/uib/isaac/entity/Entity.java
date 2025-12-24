@@ -20,6 +20,7 @@ public abstract class Entity {
         this.uuid = uuid;
         this.posX = posX;
         this.posY = posY;
+        stats.setSpeed(1);
     }
 
     public void moveEntity() {
@@ -33,5 +34,5 @@ public abstract class Entity {
 
     public abstract void initialize();
     public abstract void update();
-    public abstract void display();
+    public abstract void display(float posX, float posY);
 }

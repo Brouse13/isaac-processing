@@ -9,6 +9,7 @@ public enum RoomShape {
     L_ROOM(3),
     LARGE(4);
     private final int value;
+
     public static RoomShape fromByte(byte b) {
         for (RoomShape s : RoomShape.values()) {
             if (s.value == b) return s;

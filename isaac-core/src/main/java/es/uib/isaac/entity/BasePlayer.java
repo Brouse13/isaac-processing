@@ -39,7 +39,7 @@ public class BasePlayer extends Player {
     }
 
     @Override
-    public void display() {
-        this.getAsset().display(getPosX(), getPosY());
+    public void display(float posX, float posY) {
+        this.getAsset().display(posX, posY);
     }
 }
