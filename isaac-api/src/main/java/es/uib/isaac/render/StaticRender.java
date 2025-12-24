@@ -1,7 +1,7 @@
 package es.uib.isaac.render;
 
 /**
- * Interface thar represents a render instance that will be used to render
+ * Interface that represents a render instance that will be used to render
  * static images on screen.
  */
 public interface StaticRender {
