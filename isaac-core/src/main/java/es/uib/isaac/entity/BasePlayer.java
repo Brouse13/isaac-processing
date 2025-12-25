@@ -19,7 +19,7 @@ public class BasePlayer extends Player {
         isaac_west = new AnimationAsset("assets/players/isaac.png", 1, 4);
         setAsset(isaac_north);
 
-        this.getStats().setSpeed(107.0f);
+        this.getStats().setSpeed(1.0f);
         this.getLiveContainers().setContainers(6);
         this.getLiveContainers().setLives(4);
         this.getLiveContainers().getExtraContainers().add(LiveContainer.ExtraContainer.BLUE);
@@ -40,6 +40,6 @@ public class BasePlayer extends Player {
 
     @Override
     public void display(float posX, float posY) {
-        this.getAsset().display(posX, posY);
+        this.getAsset().display(posX, posY, 128, 128);
     }
 }

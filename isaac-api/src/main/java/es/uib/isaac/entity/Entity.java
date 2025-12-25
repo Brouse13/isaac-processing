@@ -9,6 +9,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public abstract class Entity {
+    private final int SPEED_MODIFIER = 150;
+
     private final UUID uuid;
     private final Stats stats = new Stats();
 
@@ -23,6 +25,7 @@ public abstract class Entity {
     }
 
     public void moveEntity(float deltaTime) {
+        System.out.println("moveEntity");
         double speed = stats.getSpeed();
 
         double dx = 0, dy = 0;
@@ -44,8 +47,8 @@ public abstract class Entity {
             dy *= invSqrt2;
         }
 
-        posX += (float) (dx * speed * deltaTime);
-        posY += (float) (dy * speed * deltaTime);
+        posX += (float) (dx * speed * deltaTime * SPEED_MODIFIER);
+        posY += (float) (dy * speed * deltaTime * SPEED_MODIFIER);
     }
 
     public abstract void initialize();
