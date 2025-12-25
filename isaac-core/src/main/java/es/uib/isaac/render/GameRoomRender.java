@@ -29,18 +29,23 @@ public class GameRoomRender extends CameraRender implements TileRender {
 
     @Override
     public void render() {
-        int srcW = (int) (viewPortSize.x * tileWidth);
-        int srcH = (int) (viewPortSize.y * tileHeight);
+        float scaleX = Constants.WIDTH  / (float) VIEW_WIDTH_PX;
+        float scaleY = Constants.HEIGHT / (float) VIEW_HEIGHT_PX;
+        float scale  = Math.min(scaleX, scaleY);
+
+        IsaacGame.INSTANCE.pushMatrix();
+        IsaacGame.INSTANCE.scale(scale);
 
         int srcX = (int) cameraPosition.x;
         int srcY = (int) cameraPosition.y;
 
-        IsaacGame.INSTANCE.image(
-                image,
-                0, 0, Constants.WIDTH, Constants.HEIGHT,
-                srcX, srcY, srcX + srcW, srcY + srcH
+        IsaacGame.INSTANCE.image(image,
+                0, 0, VIEW_WIDTH_PX, VIEW_HEIGHT_PX,
+                srcX, srcY, srcX + VIEW_WIDTH_PX, srcY + VIEW_HEIGHT_PX
         );
 
         super.render();
+
+        IsaacGame.INSTANCE.popMatrix();
     }
 }

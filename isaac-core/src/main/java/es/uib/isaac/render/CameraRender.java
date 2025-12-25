@@ -1,6 +1,5 @@
 package es.uib.isaac.render;
 
-import es.uib.isaac.Constants;
 import es.uib.isaac.entity.Entity;
 import es.uib.isaac.util.Vector2;
 import lombok.Getter;
@@ -9,23 +8,21 @@ import java.util.List;
 
 @Getter
 public class CameraRender {
-    // Viewport size in tiles
-    private static final int VIEW_TILES_X = 15;
-    private static final int VIEW_TILES_Y = 11;
+    protected static final int VIEW_WIDTH_PX  = 960;
+    protected static final int VIEW_HEIGHT_PX = 704;
 
     private final List<Entity> entities;
     private Entity target;
 
-    // Camera position in WORLD PIXELS (top-left)
     protected final Vector2 cameraPosition = new Vector2(0, 0);
-
-    // Viewport size in tiles
-    protected final Vector2 viewPortSize = new Vector2(VIEW_TILES_X, VIEW_TILES_Y);
 
     // World bounds in tiles
     private final Vector2 maxBounds;
 
-    protected float tileWidth, tileHeight;
+    protected static final int TILE_SIZE = 64;
+
+    protected final float tileWidth  = TILE_SIZE;
+    protected final float tileHeight = TILE_SIZE;
 
     public CameraRender(List<Entity> entities, Vector2 worldSize) {
         this.entities = entities;
@@ -37,24 +34,18 @@ public class CameraRender {
     }
 
     public void initialize() {
-        updateTileSize();
     }
 
     public void update() {
-        updateTileSize();
         updateCamera();
     }
 
-    private void updateTileSize() {
-        tileWidth = Constants.WIDTH / viewPortSize.x;
-        tileHeight = Constants.HEIGHT / viewPortSize.y;
-    }
 
     private void updateCamera() {
         if (target == null) return;
 
-        float viewWidthPx  = viewPortSize.x * tileWidth;
-        float viewHeightPx = viewPortSize.y * tileHeight;
+        float viewWidthPx  = VIEW_WIDTH_PX;
+        float viewHeightPx = VIEW_HEIGHT_PX;
 
         float worldWidthPx  = maxBounds.x * tileWidth;
         float worldHeightPx = maxBounds.y * tileHeight;
@@ -67,25 +58,25 @@ public class CameraRender {
         boolean canScrollY = worldHeightPx > viewHeightPx;
 
         if (canScrollX) {
-            cameraPosition.x = constrain(cameraPosition.x, 0, worldWidthPx - viewWidthPx);
+            cameraPosition.x = constrain(cameraPosition.x, worldWidthPx - viewWidthPx);
         } else {
             cameraPosition.x = (worldWidthPx - viewWidthPx) / 2f;
         }
 
         if (canScrollY) {
-            cameraPosition.y = constrain(cameraPosition.y, 0, worldHeightPx - viewHeightPx);
+            cameraPosition.y = constrain(cameraPosition.y, worldHeightPx - viewHeightPx);
         } else {
             cameraPosition.y = (worldHeightPx - viewHeightPx) / 2f;
         }
     }
 
-    private float constrain(float value, float min, float max) {
-        return Math.max(min, Math.min(max, value));
+    private float constrain(float value, float max) {
+        return Math.max(0f, Math.min(max, value));
     }
 
     public void render() {
         for (Entity entity : entities) {
-            // if (!isVisible(entity)) continue;
+            if (!isVisible(entity)) continue;
 
             int screenX = (int) (entity.getPosX() - cameraPosition.x);
             int screenY = (int) (entity.getPosY() - cameraPosition.y);
@@ -95,15 +86,12 @@ public class CameraRender {
     }
 
     private boolean isVisible(Entity entity) {
-        float viewWidthPx  = viewPortSize.x * tileWidth;
-        float viewHeightPx = viewPortSize.y * tileHeight;
-
         float x = entity.getPosX();
         float y = entity.getPosY();
 
         return x >= cameraPosition.x &&
-                x < cameraPosition.x + viewWidthPx &&
+                x < cameraPosition.x + VIEW_WIDTH_PX &&
                 y >= cameraPosition.y &&
-                y < cameraPosition.y + viewHeightPx;
+                y < cameraPosition.y + VIEW_HEIGHT_PX;
     }
 }
