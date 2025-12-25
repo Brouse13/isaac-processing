@@ -31,15 +31,24 @@ public class GameRoomRender extends CameraRender implements TileRender {
     public void render() {
         float scaleX = Constants.WIDTH  / (float) VIEW_WIDTH_PX;
         float scaleY = Constants.HEIGHT / (float) VIEW_HEIGHT_PX;
-        float scale  = Math.min(scaleX, scaleY);
+
+        float scale = Math.min(scaleX, scaleY);
+
+        float scaledWidth  = VIEW_WIDTH_PX  * scale;
+        float scaledHeight = VIEW_HEIGHT_PX * scale;
+
+        float offsetX = (Constants.WIDTH  - scaledWidth)  / 2f;
+        float offsetY = (Constants.HEIGHT - scaledHeight) / 2f;
 
         IsaacGame.INSTANCE.pushMatrix();
+        IsaacGame.INSTANCE.translate(offsetX / scale, offsetY / scale);
         IsaacGame.INSTANCE.scale(scale);
 
         int srcX = (int) cameraPosition.x;
         int srcY = (int) cameraPosition.y;
 
-        IsaacGame.INSTANCE.image(image,
+        IsaacGame.INSTANCE.image(
+                image,
                 0, 0, VIEW_WIDTH_PX, VIEW_HEIGHT_PX,
                 srcX, srcY, srcX + VIEW_WIDTH_PX, srcY + VIEW_HEIGHT_PX
         );
