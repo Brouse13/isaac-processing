@@ -20,19 +20,35 @@ public abstract class Entity {
         this.uuid = uuid;
         this.posX = posX;
         this.posY = posY;
-        stats.setSpeed(1);
     }
 
-    public void moveEntity() {
+    public void moveEntity(float deltaTime) {
+        double speed = stats.getSpeed();
+
+        double dx = 0, dy = 0;
+
         switch (direction) {
-            case NORTH -> posY -= stats.getSpeed();
-            case SOUTH -> posY += stats.getSpeed();
-            case EAST -> posX += stats.getSpeed();
-            case WEST -> posX -= stats.getSpeed();
+            case NORTH -> dy = -1;
+            case SOUTH -> dy = 1;
+            case EAST -> dx = 1;
+            case WEST -> dx = -1;
+            case NORTH_EAST -> { dx = 1; dy = -1; }
+            case NORTH_WEST -> { dx = -1; dy = -1; }
+            case SOUTH_EAST -> { dx = 1; dy = 1; }
+            case SOUTH_WEST -> { dx = -1; dy = 1; }
         }
+
+        if (dx != 0 && dy != 0) {
+            double invSqrt2 = 1 / Math.sqrt(2);
+            dx *= invSqrt2;
+            dy *= invSqrt2;
+        }
+
+        posX += (float) (dx * speed * deltaTime);
+        posY += (float) (dy * speed * deltaTime);
     }
 
     public abstract void initialize();
-    public abstract void update();
+    public abstract void update(float deltaTime);
     public abstract void display(float posX, float posY);
 }

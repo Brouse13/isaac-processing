@@ -20,6 +20,11 @@ public class IsaacGame extends PApplet {
     RoomLayout layout = new RoomLayout((byte) 0, RoomShape.SQUARE, 28, 16, null, null);
     GameRoomRender gameRoomRender;
     PImage img;
+    float lastTime = 0;
+    private boolean wPressed = false;
+    private boolean aPressed = false;
+    private boolean sPressed = false;
+    private boolean dPressed = false;
 
     @Override
     public void settings() {
@@ -56,9 +61,11 @@ public class IsaacGame extends PApplet {
 
     @Override
     public void draw() {
-        if (frameCount % 2 == 0) { // 30 updates/sec at 60 FPS
-            updateGame();
-        }
+        float currentTime = millis() / 1000.0f; // time in seconds
+        float deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+
+        updateGame(deltaTime);
 
         if (!dirty) return;
 
@@ -71,25 +78,57 @@ public class IsaacGame extends PApplet {
         gameRoomRender.render();
     }
 
-    void updateGame() {
+    void updateGame(float deltaTime) {
         if (moving) {
-            isaac.update();
+            isaac.update(deltaTime);
             dirty = true;
         }
         gameRoomRender.update();
     }
 
-    public void keyReleased() {
-        moving = false;
-    }
 
     public void keyPressed() {
         switch (key) {
-            case 'w' -> isaac.setDirection(Direction.NORTH);
-            case 's' -> isaac.setDirection(Direction.SOUTH);
-            case 'a' -> isaac.setDirection(Direction.WEST);
-            case 'd' -> isaac.setDirection(Direction.EAST);
-            default -> {}
+            case 'w' -> wPressed = true;
+            case 's' -> sPressed = true;
+            case 'a' -> aPressed = true;
+            case 'd' -> dPressed = true;
+        }
+
+        updateDirection();
+    }
+
+    public void keyReleased() {
+        switch (key) {
+            case 'w' -> wPressed = false;
+            case 's' -> sPressed = false;
+            case 'a' -> aPressed = false;
+            case 'd' -> dPressed = false;
+        }
+
+        updateDirection();
+    }
+
+    private void updateDirection() {
+        if (wPressed && aPressed) {
+            isaac.setDirection(Direction.NORTH_WEST);
+        } else if (wPressed && dPressed) {
+            isaac.setDirection(Direction.NORTH_EAST);
+        } else if (sPressed && aPressed) {
+            isaac.setDirection(Direction.SOUTH_WEST);
+        } else if (sPressed && dPressed) {
+            isaac.setDirection(Direction.SOUTH_EAST);
+        } else if (wPressed) {
+            isaac.setDirection(Direction.NORTH);
+        } else if (sPressed) {
+            isaac.setDirection(Direction.SOUTH);
+        } else if (aPressed) {
+            isaac.setDirection(Direction.WEST);
+        } else if (dPressed) {
+            isaac.setDirection(Direction.EAST);
+        } else {
+            moving = false;
+            return; // no keys pressed
         }
         moving = true;
         dirty = true;

@@ -19,7 +19,7 @@ public class BasePlayer extends Player {
         isaac_west = new AnimationAsset("assets/players/isaac.png", 1, 4);
         setAsset(isaac_north);
 
-        this.getStats().setSpeed(7.0f);
+        this.getStats().setSpeed(107.0f);
         this.getLiveContainers().setContainers(6);
         this.getLiveContainers().setLives(4);
         this.getLiveContainers().getExtraContainers().add(LiveContainer.ExtraContainer.BLUE);
@@ -28,8 +28,8 @@ public class BasePlayer extends Player {
     }
 
     @Override
-    public void update() {
-        moveEntity();
+    public void update(float deltaTime) {
+        moveEntity(deltaTime);
         switch (getDirection()) {
             case NORTH -> setAsset(isaac_north);
             case SOUTH -> setAsset(isaac_south);
