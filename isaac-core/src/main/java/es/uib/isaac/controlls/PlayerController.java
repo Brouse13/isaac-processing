@@ -45,8 +45,8 @@ public class PlayerController {
         }
 
         // Update player position
-        basePlayer.setPosX((data[0] << 8 | data[1]) / 100f);
-        basePlayer.setPosY((data[2] << 8 | data[3]) / 100f);
+        basePlayer.setPosX((data[0] << 8 | data[1]) / 10f);
+        basePlayer.setPosY((data[2] << 8 | data[3]) / 10f);
     }
 
     public void updateDirection() {
