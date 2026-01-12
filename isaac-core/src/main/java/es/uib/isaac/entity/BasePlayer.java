@@ -28,8 +28,7 @@ public class BasePlayer extends Player {
     }
 
     @Override
-    public void update(float deltaTime) {
-        moveEntity();
+    public void update() {
         switch (getDirection()) {
             case NORTH -> setAsset(isaac_north);
             case SOUTH -> setAsset(isaac_south);

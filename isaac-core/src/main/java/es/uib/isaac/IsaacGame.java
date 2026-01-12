@@ -15,13 +15,15 @@ import processing.core.PApplet;
 public class IsaacGame extends PApplet {
     public static IsaacGame INSTANCE;
     private Player isaac;
-    private boolean dirty = true;
     private final ListRenderer listRenderer = new ListRenderer();
     RoomLayout layout = new RoomLayout((byte) 0, RoomShape.SQUARE, 28, 16, null, null);
     GameRoomRender gameRoomRender;
-    float lastTime = 0;
     private final MqttAdapter mqttAdapter = new MqttAdapter();
     private PlayerController playerController;
+
+    final float DT = 1.0f / 60.0f;
+    float accumulator = 0;
+    long lastTime = System.nanoTime();
 
     @Override
     public void settings() {
@@ -51,16 +53,16 @@ public class IsaacGame extends PApplet {
 
     @Override
     public void draw() {
-        float currentTime = millis() / 1000.0f; // time in seconds
-        float deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
+        long now = System.nanoTime();
+        accumulator += (now - lastTime) / 1_000_000_000f;
+        lastTime = now;
 
-        updateGame(deltaTime);
-
-        if (!dirty) return;
+        while (accumulator >= DT) {
+            updateGame();
+            accumulator -= DT;
+        }
 
         renderGame();
-        dirty = false;
     }
 
     void renderGame() {
@@ -68,14 +70,9 @@ public class IsaacGame extends PApplet {
         gameRoomRender.render();
     }
 
-    void updateGame(float deltaTime) {
-        boolean moving = playerController.updateDirection();
-
-        if (moving) {
-            isaac.update(deltaTime);
-            dirty = true;
-        }
-
+    void updateGame() {
+        playerController.updateDirection();
+        isaac.update();
         gameRoomRender.update();
     }
 

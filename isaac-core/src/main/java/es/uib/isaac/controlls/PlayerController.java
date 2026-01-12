@@ -49,32 +49,26 @@ public class PlayerController {
         basePlayer.setPosY((data[2] << 8 | data[3]) / 100f);
     }
 
-    public boolean updateDirection() {
-        Direction direction;
+    public void updateDirection() {
+        Direction direction = getDirection();
+        if (direction == null) return;
 
-        if (wPressed && aPressed) {
-            direction = Direction.NORTH_WEST;
-        } else if (wPressed && dPressed) {
-            direction = Direction.NORTH_EAST;
-        } else if (sPressed && aPressed) {
-            direction = Direction.SOUTH_WEST;
-        } else if (sPressed && dPressed) {
-            direction = Direction.SOUTH_EAST;
-        } else if (wPressed) {
-            direction = Direction.NORTH;
-        } else if (sPressed) {
-            direction = Direction.SOUTH;
-        } else if (aPressed) {
-            direction = Direction.WEST;
-        } else if (dPressed) {
-            direction = Direction.EAST;
-        } else {
-            return false;
-        }
+        basePlayer.setDirection(direction);
 
         byte[] payload = new byte[1];
         payload[0] = (byte) direction.ordinal();
         mqttAdapter.publish("isaac/updateMove", payload);
-        return true;
+    }
+
+    private Direction getDirection() {
+        if (wPressed && aPressed) return Direction.NORTH_WEST;
+        if (wPressed && dPressed) return Direction.NORTH_EAST;
+        if (sPressed && aPressed) return Direction.SOUTH_WEST;
+        if (sPressed && dPressed) return Direction.SOUTH_EAST;
+        if (wPressed)             return Direction.NORTH;
+        if (sPressed)             return Direction.SOUTH;
+        if (aPressed)             return Direction.WEST;
+        if (dPressed)             return Direction.EAST;
+        return null;
     }
 }
