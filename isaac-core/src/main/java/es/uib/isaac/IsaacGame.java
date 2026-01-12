@@ -12,6 +12,8 @@ import es.uib.isaac.ui.ListRenderer;
 import es.uib.isaac.render.StaticRender;
 import processing.core.PApplet;
 
+import static es.uib.isaac.Constants.POLL_RATE;
+
 public class IsaacGame extends PApplet {
     public static IsaacGame INSTANCE;
     private Player isaac;
@@ -21,23 +23,23 @@ public class IsaacGame extends PApplet {
     private final MqttAdapter mqttAdapter = new MqttAdapter();
     private PlayerController playerController;
 
-    final float DT = 1.0f / 60.0f;
-    float accumulator = 0;
-    long lastTime = System.nanoTime();
+    int lastPollTime = 0;
 
     @Override
     public void settings() {
         INSTANCE = this;
         size(Constants.WIDTH, Constants.HEIGHT);
 
+        isaac = new BasePlayer(0, 0);
+        isaac.initialize();
+        isaac.setDirection(Direction.SOUTH);
+
         mqttAdapter.connect("localhost", 1883, "isaac-processing");
     }
 
     @Override
     public void setup() {
-        isaac = new BasePlayer(0, 0);
-        isaac.initialize();
-        isaac.setDirection(Direction.SOUTH);
+        frameRate(60);
 
         //listRenderer.addRender("isaac-lives", new LiveRender(isaac.getLiveContainers()));
 
@@ -53,13 +55,11 @@ public class IsaacGame extends PApplet {
 
     @Override
     public void draw() {
-        long now = System.nanoTime();
-        accumulator += (now - lastTime) / 1_000_000_000f;
-        lastTime = now;
+        int now = millis();
 
-        while (accumulator >= DT) {
+        if (now - lastPollTime >= POLL_RATE) {
             updateGame();
-            accumulator -= DT;
+            lastPollTime = now;
         }
 
         renderGame();

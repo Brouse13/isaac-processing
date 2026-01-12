@@ -5,6 +5,6 @@ public class Constants {
     public static int HEIGHT = 11*64;
     public static final int FPS = 10;
 
-    public static final int SPEED = 10;
+    public static final int POLL_RATE = 150;
 
 }
